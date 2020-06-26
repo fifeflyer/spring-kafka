@@ -6,10 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
-@EnableWebMvc
 public class WebConfig implements WebApplicationInitializer {
 
     @Override
@@ -18,7 +16,7 @@ public class WebConfig implements WebApplicationInitializer {
         applicationContext.register(WebMvcConfig.class);
         applicationContext.setServletContext(servletContext);
 
-        ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", new DispatcherServlet(applicationContext));
+        ServletRegistration.Dynamic dispatcher = servletContext.addServlet("mvc", new DispatcherServlet(applicationContext));
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
     }
