@@ -1,0 +1,33 @@
+###
+
+POST http://localhost:10090/spring-kafka/kafka/message
+Content-Type: application/json
+
+{
+  "eventType": "TEXT",
+  "data": "Hello Wayne"
+}
+
+###
+
+POST http://localhost:10090/spring-kafka/kafka/order
+Content-Type: application/json
+
+{
+  "eventType": "ORDER_SUBMITTED",
+  "data": {
+    "id": "MyTimeline"
+  }
+}
+
+###
+
+POST http://localhost:10090/spring-kafka/kafka/order
+Content-Type: application/json
+
+{
+  "eventType": "UNSUPPORTED",
+  "data": {
+    "id": "MyTimeline"
+  }
+}

@@ -1,6 +1,7 @@
 package com.example.kafka.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,13 +14,21 @@ public class KafkaController {
 
     private final KafkaProducer producer;
 
+    @Value(value = "${kafka.topic}")
+    private String topic;
+
     @Autowired
     public KafkaController(KafkaProducer producer) {
         this.producer = producer;
     }
 
     @PostMapping(value = "/kafka/message")
-    public void publishMessage(@RequestBody @NonNull KafkaMessage message) {
-        producer.sendMessage(message.getText());
+    public void publishMessage(@RequestBody @NonNull KafkaMessage<?> message) {
+        producer.sendMessage(topic, message);
+    }
+
+    @PostMapping(value = "/kafka/order")
+    public void publishOrder(@RequestBody @NonNull KafkaMessage<?> message) {
+        producer.sendMessage("orders", message);
     }
 }

@@ -47,6 +47,34 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.10.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.dkanejs.maven.plugins</groupId>
+            <artifactId>docker-compose-maven-plugin</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>3.3.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.2.3.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -94,7 +122,115 @@
                         <force>true</force>
                     </systemProperties>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                            <goal>deploy-war</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>get-local-ip</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>local-ip</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>acceptance</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.22.2</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*IntegrationTest.java</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>acceptance tests</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>dockerBuild</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.dkanejs.maven.plugins</groupId>
+                        <artifactId>docker-compose-maven-plugin</artifactId>
+                        <version>4.0.0</version>
+                        <configuration>
+                            <envVars>
+                                <HOST_IP>${local.ip}</HOST_IP>
+                                <KAFKA_DATA>${project.build.directory}/docker-kafka/data</KAFKA_DATA>
+                            </envVars>
+                            <buildArgs>
+                                <alwaysPull>true</alwaysPull>
+                            </buildArgs>
+                            <removeImages>true</removeImages>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>pull</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>pull</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>up</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>up</goal>
+                                </goals>
+                                <configuration>
+                                    <detachedMode>true</detachedMode>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>down</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>down</goal>
+                                </goals>
+                                <configuration>
+                                    <!--<removeVolumes>true</removeVolumes>-->
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
