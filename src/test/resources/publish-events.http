@@ -8,6 +8,12 @@ Content-Type: application/json
   "data": "Hello Wayne"
 }
 
+> {%
+    client.test("Text message published", function() {
+        client.assert(response.status === 201, "Text message not published");
+    });
+%}
+
 ###
 
 POST http://localhost:10090/spring-kafka/kafka/order
@@ -20,6 +26,12 @@ Content-Type: application/json
   }
 }
 
+> {%
+    client.test("Order submitted notification published", function() {
+        client.assert(response.status === 201, "Order submitted notification not published");
+    });
+%}
+
 ###
 
 POST http://localhost:10090/spring-kafka/kafka/order
@@ -31,3 +43,9 @@ Content-Type: application/json
     "id": "MyTimeline"
   }
 }
+
+> {%
+    client.test("Unsupported event published", function() {
+        client.assert(response.status === 400, "Failed to reject unsupported event");
+    });
+%}

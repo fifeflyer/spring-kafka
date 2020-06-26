@@ -9,4 +9,8 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EventType("ORDER_SUBMITTED")
 public class OrderSubmittedNotification extends KafkaMessage<Timeline> {
+
+    public OrderSubmittedNotification() {
+        setEventType("ORDER_SUBMITTED");
+    }
 }
