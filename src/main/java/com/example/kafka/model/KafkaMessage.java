@@ -15,5 +15,9 @@ public class KafkaMessage<T> {
 
     private String eventType;
     private T data;
+
+    public KafkaMessage() {
+        setEventType(getClass().getAnnotation(EventType.class).value());
+    }
 }
 

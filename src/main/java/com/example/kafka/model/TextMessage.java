@@ -9,8 +9,4 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EventType("TEXT")
 public class TextMessage extends KafkaMessage<String> {
-
-    public TextMessage() {
-        setEventType("TEXT");
-    }
 }
