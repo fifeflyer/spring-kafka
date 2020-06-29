@@ -19,5 +19,5 @@ import io.cucumber.junit.CucumberOptions;
         snippets = CAMELCASE,
         strict = true,
         tags = {"not @wip"})
-public class CucumberTestRunner {
+public class CucumberAcceptanceTest {
 }

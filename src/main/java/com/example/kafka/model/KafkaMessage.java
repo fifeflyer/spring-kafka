@@ -3,8 +3,10 @@ package com.example.kafka.model;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 @Data
+@SuperBuilder
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "eventType", visible = true, include = JsonTypeInfo.As.EXISTING_PROPERTY)
 //@JsonSubTypes({
 //        @JsonSubTypes.Type(value = TextMessage.class, name = "TEXT"),
